@@ -25,6 +25,6 @@ The user provides an objective to the multi-agent system, which then experiments
 
 ---
 ## Research Paper 
-- **Framework Introduction**: Introduces a framework that integrates a multi-agent system with LLMs to interact with a simulation model and find parametrization solutions for a process.
-- **Project Status**: Currently a **work-in-progress** research project and the paper is **under peer-review**.
-- **Application Area**: we are continuing to investigate more sophisticated simulation models for **industrial automation systems**.
+- **Design**: introduces a framework that integrates a multi-agent system with LLMs to interact with a simulation model and find parametrization solutions for a process.
+- **Project Status**: it is currently a **work-in-progress** research project and the paper is **under peer-review**.
+- **Application Area**: we are investigating the LLMs' interaction with more sophisticated simulation models for **industrial automation systems**.
