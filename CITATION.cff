@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "Details of this work has been documented in a pre-print paper, which is currently under review."
+title: "LLM experiments with simulation: Large Language Model Multi-Agent System for Process Simulation Parametrization in Digital Twins"
+authors:
+  - family-names: "Xia"
+    given-names: "Yuchen"
+  - family-names: "Dittler"
+    given-names: "Daniel"
+  - family-names: "Jazdi"
+    given-names: "Nasser"
+  - family-names: "Chen"
+    given-names: "Haonan"
+  - family-names: "Weyrich"
+    given-names: "Michael"
+keywords:
+  - "Digital Twin"
+  - "Intelligent Automation"
+  - "Large Language Models"
+  - "Multi-Agent System"
+  - "Simulation"
+date-released: 2024-05-29
+repository-code: "https://github.com/YuchenXia/LLMDrivenSimulation"
+url: "https://arxiv.org/abs/2405.18092v1"
+abstract: "This paper presents a novel design of a multi-agent system framework that applies a large language model (LLM) to automate the parametrization of process simulations in digital twins. We propose a multi-agent framework that includes four types of agents: observation, reasoning, decision and summarization. By enabling dynamic interaction between LLM agents and simulation model, the developed system can automatically explore the parametrization of the simulation and use heuristic reasoning to determine a set of parameters to control the simulation to achieve an objective. The proposed approach enhances the simulation model by infusing it with heuristics from LLM and enables autonomous search for feasible parametrization to solve a user task. Furthermore, the system has the potential to increase user-friendliness and reduce the cognitive load on human users by assisting in complex decision-making processes. The effectiveness and functionality of the system are demonstrated through a case study, and the visualized demos are available at a GitHub Repository."
