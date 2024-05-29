@@ -10,7 +10,13 @@ LLM system interacts with simulation models in digital twins
 
 ### The system design
 ![system_design_1](demos/system_design_1.jpg)
+
+The LLM interprets the simulation steps in a cyclic manner.
+
 ![system_design_2](demos/system_design_2.jpg)
+
+The user provides an objective to the multi-agent system, which then experiments with the simulation to heuristically explore solutions. Finally, the LLM agent provides a summarized solution to parameterize the simulation model.
+
 ![system_design_3](demos/system_design_3.jpg)
 
 ### Research Paper 
