@@ -5,8 +5,12 @@ LLM system interacts with simulation models in digital twins
 ## Human performs experiment
 ![Real Mix Demo](demos/mix_real.gif)
 
+A demo video with higher resolution is for download: [mix_real_experiment.mov](mix_real_experiment.mov)
+
 ## LLM agent performs simulation
 ![Simulation Mix Demo](demos/mix_simulation.gif)
+
+A demo video with higher resolution is for download: [mix_simulation.mov](mix_simulation.mov)
 
 ## The system design
 The LLM interprets the simulation steps in a cyclic manner, interacting with the data and control interface in a digital environment.
