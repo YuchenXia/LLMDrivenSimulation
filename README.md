@@ -14,7 +14,9 @@ A demo video with higher resolution is for download: [mix_simulation.mov](mix_si
 
 ## The system design
 The LLM interprets the simulation steps in a cyclic manner, interacting with the data and control interface in a digital environment.
+
 The system is designed to be **independent from a specific LLM**, meaning that any proprietary LLM or open-source LLM can be used to power the system. 
+
 The **reasoning capability** is the most essential, and GPT-4 performs significantly better than GPT-3.5 and other open-source models.
 
 ---
