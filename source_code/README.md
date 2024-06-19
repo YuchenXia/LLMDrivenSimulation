@@ -5,7 +5,7 @@ You can run the simulation multiple times to observe how LLM agents perform diff
 ## Installation
 To set up the project locally, follow these steps:
 
-1. Download the code and open with IDE
+1. Download the code and open with IDE, **python 3.9** is recommended for the environment to avoid package incompatibility.
 
 2. Install the required dependencies:
    ```
