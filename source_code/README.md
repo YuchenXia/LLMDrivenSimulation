@@ -20,4 +20,4 @@ To set up the project locally, follow these steps:
    in .env:
    OPENAI_API_KEY="your_key_here"
    ```
-4. run **app_socketio.py**
+4. run **app_socketio.py** and use web browser to interact with the system.
