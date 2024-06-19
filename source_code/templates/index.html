@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Container Simulation</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f7f7;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            /* Removed mt-5 class adjustment as it will now be handled by Bootstrap */
+        }
+        input[type=number] {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: calc(50% - 22px);
+        }
+        button {
+            padding: 10px 20px;
+            background: #005a9c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #004080;
+        }
+        .image-container {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background: #fff;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .container {
+          max-width: 900px;
+        }
+
+        #chat-messages {
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            display: flex;
+            max-width: 70%;
+            word-break: break-word;
+            padding: 10px;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .user-message {
+            margin-left: auto;
+            background-color: #007bff;
+        }
+
+        .chatbot-message {
+            margin-right: auto;
+            background-color: #555;
+        }
+
+        .message-text {
+            padding: 0 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4">Container Ball Simulation</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Add Row(s)</h4>
+                        <form id="addrowForm" action="/add" method="post">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">rows</span>
+                                            </div>
+                                            <select id="rowNum" name="rowNum" class="form-control" required
+                                                    aria-label="Number of rows">
+                                                <!-- Replace the following options with the actual row numbers you want to include -->
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <!-- Add more options as needed -->
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td style="width: 53%;">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Weight</span>
+                                            </div>
+                                            <select id="weight" name="weight" class="form-control" required
+                                                    aria-label="Weight">
+                                                <option value="1">Light</option>
+                                                <option value="2">Normal</option>
+                                                <option value="3">Heavy</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-primary btn-block">Add Row(s)</button>
+                            <p class="text-muted">We can add rows of balls in this container.</p> <span
+                                style="color: red; background-color: grey; font-weight: bold;">Heavy balls</span>,
+                            <span style="color: orange; background-color: grey; font-weight: bold;">Normal balls</span>
+                            or
+                            <span style="color: yellow; background-color: grey; font-weight: bold;">Light balls</span>.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Shake Container</h4>
+                        <!-- Second form for shaking the container -->
+                        <form id="shakeForm" action="/shake" method="post">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="number" id="shakeTimes" name="shakeTimes"
+                                                   placeholder="Shake Times"
+                                                   class="form-control" required aria-label="Shake times" value="1">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">times</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-secondary btn-block">Shake Container</button>
+                            <p class="text-muted">We can shake container, to make the balls equally distributed.</p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-container">
+        {% if base64_img %}
+        <img src="data:image/png;base64,{{ base64_img }}" alt="Simulation Result">
+        {% else %}
+        <p>Simulation Image</p>
+        {% endif %}
+    </div>
+    <div class="container">
+        <div class="col d-flex justify-content-center flex-nowrap">
+            <form id="exampleForm1" action="/set_example" method="post" class="d-flex">
+                <input type="hidden" name="exampleNum" value="1">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Ex. 1</button>
+            </form>
+            <form id="exampleForm2" action="/set_example" method="post" class="d-flex">
+                <input type="hidden" name="exampleNum" value="2">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Ex. 2</button>
+            </form>
+            <form id="exampleForm3" action="/set_example" method="post" class="d-flex">
+                <input type="hidden" name="exampleNum" value="3">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Ex. 3</button>
+            </form>
+            <form id="exampleForm4" action="/set_example" method="post" class="d-flex">
+                <input type="hidden" name="exampleNum" value="4">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Ex. 4</button>
+            </form>
+            <form id="exampleForm5" action="/set_example" method="post" class="d-flex">
+                <input type="hidden" name="exampleNum" value="5">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Clear</button>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div id="chat-container"
+             style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-width: 850px; width: 100%; background: #fff;">
+            <h4>Chat box</h4>
+            <ul id="chat-messages" style="list-style-type: none; padding: 0;"></ul>
+        </div>
+        <div id="user-input-container" style="margin-top: 20px;">
+            <input type="text" id="user-message" value="Start the Simulation: The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+            In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process."
+                   style="padding: 10px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px; width: calc(100% - 120px);" readonly>
+            <button id="send-message"
+                    style="padding: 10px 20px; background: #005a9c; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Click to Start
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on('connect', function() {
+        console.log('Websocket connected!');
+
+        document.getElementById('addrowForm').onsubmit = function(e) {
+            e.preventDefault();
+            var rowNum = document.getElementById('rowNum').value;
+            var weight = document.getElementById('weight').value;
+            socket.emit('add_row', { rowNum: rowNum, weight: weight });
+            var chatMessages = document.getElementById('chat-messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'user-message');
+            messageElement.innerHTML = `<span class="message-text">Add ${rowNum} row(s) of ${weight} balls.</span>`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        document.getElementById('shakeForm').onsubmit = function(e) {
+            e.preventDefault();
+            var shakeTimes = document.getElementById('shakeTimes').value;
+            socket.emit('shake', { shakeTimes: shakeTimes });
+            var chatMessages = document.getElementById('chat-messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'user-message');
+            messageElement.innerHTML = `<span class="message-text">Shake the container.</span>`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        var exampleForms = document.querySelectorAll('form[action="/set_example"]');
+        exampleForms.forEach(function(form) {
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                var exampleNum = this.exampleNum.value;
+                socket.emit('set_example', { exampleNum: exampleNum });
+                var chatMessages = document.getElementById('chat-messages');
+                var messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'user-message');
+                messageElement.innerHTML = `<span class="message-text">Use example ${exampleNum}.</span>`;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+        });
+    });
+
+    socket.on('chat_message', function(data) {
+        var chatMessages = document.getElementById('chat-messages');
+        var messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'chatbot-message');
+        messageElement.innerHTML = `<span class="message-text">${data.message}</span>`;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    document.getElementById('send-message').addEventListener('click', function() {
+        var userMessage = document.getElementById('user-message').value;
+        if (userMessage.trim() !== '') {
+            var chatMessages = document.getElementById('chat-messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'user-message');
+            messageElement.innerHTML = `<span class="message-text">${userMessage}</span>`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            socket.emit('user_message', { message: userMessage });
+            document.getElementById('user-message').value = '';
+        }
+    });
+
+
+
+    socket.on('update_image', function(data) {
+        var imgContainer = document.querySelector('.image-container');
+        imgContainer.innerHTML = '<img src="data:image/png;base64,' + data.base64_img + '" alt="Simulation Result">';
+    });
+</script>
+</body>
+</html>
+

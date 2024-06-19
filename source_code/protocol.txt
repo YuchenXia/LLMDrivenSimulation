@@ -1,0 +1,2555 @@
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+The change of mixing index after the last shake action is: 0.0
+Output:
+Result:
+
+***********************
+{
+  "container_state": "empty",
+  "rows_filled": "0",
+  "number_of_rows_required": {
+    "light_ball": "4",
+    "normal_ball": "3",
+    "heavy_ball": "3"
+  },
+  "distribution": "uniformly empty",
+  "change_of_mixing_index": "0.0",
+  "important_aspect": "Adding balls is required to initiate the mixing process."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "empty",
+  "rows_filled": "0",
+  "number_of_rows_required": {
+    "light_ball": "4",
+    "normal_ball": "3",
+    "heavy_ball": "3"
+  },
+  "distribution": "uniformly empty",
+  "change_of_mixing_index": "0.0",
+  "important_aspect": "Adding balls is required to initiate the mixing process."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+Output:
+Result:
+
+***********************
+{"reason_for_an_action": "Initiate mixing process by adding the first set of balls to the empty container.", "action": "add_balls", "parameters": {"row_number": "2", "unit_of_weight": "1"}}
+Add balls 2 weight: 1
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.011666666666666667
+Output:
+Result:
+
+***********************
+{
+  "container_state": "The container has the first 2 rows filled with light balls, and 8 rows are empty.",
+  "rows_filled": "2 rows filled, 8 more rows to go.",
+  "number_of_rows_required": {"light_ball": "2", "normal_ball": "3", "heavy_ball": "3"},
+  "distribution": "Light balls occupy the bottom 2 rows.",
+  "change_of_mixing_index": "0.011666666666666667",
+  "important_aspect": "We need to add more rows of balls to fill the container and achieve a mixed distribution of all types."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "The container has the first 2 rows filled with light balls, and 8 rows are empty.",
+  "rows_filled": "2 rows filled, 8 more rows to go.",
+  "number_of_rows_required": {"light_ball": "2", "normal_ball": "3", "heavy_ball": "3"},
+  "distribution": "Light balls occupy the bottom 2 rows.",
+  "change_of_mixing_index": "0.011666666666666667",
+  "important_aspect": "We need to add more rows of balls to fill the container and achieve a mixed distribution of all types."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "To progress towards a mixed distribution by adding remaining light balls before introducing heavier ones",
+  "action": "add_balls",
+  "parameters": {
+    "row_number": 2,
+    "unit_of_weight": 1
+  }
+}
+Add balls 2 weight: 1
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.0
+Output:
+Result:
+
+***********************
+{
+  "container_state": "The container has 6 empty rows on top, followed by 4 rows of light balls at the bottom.",
+  "rows_filled": "4",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "3"},
+  "distribution": "The light balls are evenly distributed at the bottom.",
+  "change_of_mixing_index": "0.0",
+  "important_aspect": "Focus on adding rows of normal and heavy balls to achieve the homogenous distribution."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "The container has 6 empty rows on top, followed by 4 rows of light balls at the bottom.",
+  "rows_filled": "4",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "3"},
+  "distribution": "The light balls are evenly distributed at the bottom.",
+  "change_of_mixing_index": "0.0",
+  "important_aspect": "Focus on adding rows of normal and heavy balls to achieve the homogenous distribution."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "To start mixing heavy and normal balls with light balls for an even distribution",
+  "action": "add_balls",
+  "parameters": {
+    "row_number": 2,
+    "unit_of_weight": 3
+  }
+}
+Add balls 2 weight: 3
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.02333333333333333
+Output:
+Result:
+
+***********************
+{
+  "container_state": "Partly filled, heavier balls on top of lighter ones.",
+  "rows_filled": "6 out of 10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "1"},
+  "distribution": "3 rows of heavy balls (top), followed by 3 rows of light balls (bottom).",
+  "change_of_mixing_index": "0.02333333333333333",
+  "important_aspect": "Need to add more normal and heavy balls to achieve homogenous distribution."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "Partly filled, heavier balls on top of lighter ones.",
+  "rows_filled": "6 out of 10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "1"},
+  "distribution": "3 rows of heavy balls (top), followed by 3 rows of light balls (bottom).",
+  "change_of_mixing_index": "0.02333333333333333",
+  "important_aspect": "Need to add more normal and heavy balls to achieve homogenous distribution."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "To achieve a homogenous distribution, we need to add normal balls since that is the only type not yet added to fulfill the requirement of adding 3 rows of normal balls.",
+  "action": "add_balls",
+  "parameters": {
+    "row_number": 3,
+    "unit_of_weight": 2
+  }
+}
+Add balls 3 weight: 2
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [2 2 2 2 2 2 2 2 2 2]
+row 8: [2 2 2 2 2 2 2 2 2 2]
+row 7: [2 2 2 2 2 2 2 2 2 2]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.02333333333333333
+Output:
+Result:
+
+***********************
+{
+  "container_state": "Partially filled, bottom 9 rows with balls, top row empty",
+  "rows_filled": "9",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "1"},
+  "distribution": "Bottom 4 rows light balls, above that 2 rows heavy balls, then 3 rows of normal balls, top row empty",
+  "change_of_mixing_index": "0.02333333333333333",
+  "important_aspect": "One more row of heavy balls is needed to complete the filling process."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "Partially filled, bottom 9 rows with balls, top row empty",
+  "rows_filled": "9",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "1"},
+  "distribution": "Bottom 4 rows light balls, above that 2 rows heavy balls, then 3 rows of normal balls, top row empty",
+  "change_of_mixing_index": "0.02333333333333333",
+  "important_aspect": "One more row of heavy balls is needed to complete the filling process."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [2 2 2 2 2 2 2 2 2 2]
+row 8: [2 2 2 2 2 2 2 2 2 2]
+row 7: [2 2 2 2 2 2 2 2 2 2]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{"reason_for_an_action": "Need to fill the empty top row with heavy balls to complete the filling process and aim for homogeneous distribution through shaking.", "action": "add_balls", "parameters": {"row_number": 1, "unit_of_weight": 3}}
+Add balls 1 weight: 3
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [3 3 3 3 3 3 3 3 3 3]
+row 9: [2 2 2 2 2 2 2 2 2 2]
+row 8: [2 2 2 2 2 2 2 2 2 2]
+row 7: [2 2 2 2 2 2 2 2 2 2]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.011666666666666665
+Output:
+Result:
+
+***********************
+{
+  "container_state": "The container is currently filled with 10 rows of balls: 4 rows of heavy balls, 3 rows of normal balls, and 3 rows of light balls.",
+  "rows_filled": "10/10",
+  "number_of_rows_required": {"light_ball": "1", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "Light balls are concentrated at the bottom, normal balls in the middle, and heavy balls at the top with an incomplete mix.",
+  "change_of_mixing_index": "0.011666666666666665",
+  "important_aspect": "An additional row of light balls is required to achieve the objective of 10 fully filled rows with a homogenous mix."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "The container is currently filled with 10 rows of balls: 4 rows of heavy balls, 3 rows of normal balls, and 3 rows of light balls.",
+  "rows_filled": "10/10",
+  "number_of_rows_required": {"light_ball": "1", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "Light balls are concentrated at the bottom, normal balls in the middle, and heavy balls at the top with an incomplete mix.",
+  "change_of_mixing_index": "0.011666666666666665",
+  "important_aspect": "An additional row of light balls is required to achieve the objective of 10 fully filled rows with a homogenous mix."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [3 3 3 3 3 3 3 3 3 3]
+row 9: [2 2 2 2 2 2 2 2 2 2]
+row 8: [2 2 2 2 2 2 2 2 2 2]
+row 7: [2 2 2 2 2 2 2 2 2 2]
+row 6: [3 3 3 3 3 3 3 3 3 3]
+row 5: [3 3 3 3 3 3 3 3 3 3]
+row 4: [1 1 1 1 1 1 1 1 1 1]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{"reason_for_an_action": "The container is fully filled with 10 rows of balls, but the distribution of light, normal, and heavy balls is not homogenous. To achieve a homogenous mix, the container needs to be shaken to allow balls of different weights to redistribute.", "action": "shake", "parameters": {}}
+Shake
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [3 2 3 2 3 3 3 2 2 3]
+row 9: [2 3 2 3 2 2 2 3 3 2]
+row 8: [2 2 2 2 2 2 2 2 1 2]
+row 7: [2 2 1 2 2 2 2 1 2 2]
+row 6: [3 3 2 3 1 3 1 2 2 1]
+row 5: [3 3 3 3 3 1 3 3 3 3]
+row 4: [1 1 3 1 3 3 3 3 3 3]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.041666666666666685
+Output:
+Result:
+
+***********************
+{
+  "container_state": "mixed",
+  "rows_filled": "10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The container shows an uneven distribution of light, normal, and heavy balls across all rows, with light balls concentrated at the bottom and a mix of normal and heavy balls in the top half.",
+  "change_of_mixing_index": "0.041666666666666685",
+  "important_aspect": "Achieving a homogenous mix requires further shaking to better distribute the weight classes of balls across the container."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "mixed",
+  "rows_filled": "10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The container shows an uneven distribution of light, normal, and heavy balls across all rows, with light balls concentrated at the bottom and a mix of normal and heavy balls in the top half.",
+  "change_of_mixing_index": "0.041666666666666685",
+  "important_aspect": "Achieving a homogenous mix requires further shaking to better distribute the weight classes of balls across the container."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [3 2 3 2 3 3 3 2 2 3]
+row 9: [2 3 2 3 2 2 2 3 3 2]
+row 8: [2 2 2 2 2 2 2 2 1 2]
+row 7: [2 2 1 2 2 2 2 1 2 2]
+row 6: [3 3 2 3 1 3 1 2 2 1]
+row 5: [3 3 3 3 3 1 3 3 3 3]
+row 4: [1 1 3 1 3 3 3 3 3 3]
+row 3: [1 1 1 1 1 1 1 1 1 1]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "To better distribute the mixed balls across the container, enabling a more uniform distribution of light, normal, and heavy balls",
+  "action": "shake",
+  "parameters": {}
+}
+Shake
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [2 2 2 2 1 2 2 2 2 3]
+row 9: [3 2 3 3 3 3 3 2 1 2]
+row 8: [2 3 1 2 2 2 2 3 3 2]
+row 7: [2 2 2 2 2 2 2 1 2 1]
+row 6: [1 3 2 3 2 3 1 2 2 2]
+row 5: [3 1 3 3 3 1 3 3 3 1]
+row 4: [3 3 3 1 3 3 1 3 3 3]
+row 3: [1 1 1 1 1 1 3 1 1 3]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.02499999999999998
+Output:
+Result:
+
+***********************
+{
+  "container_state": "partially mixed with varying distribution of ball weights across 10 filled rows",
+  "rows_filled": "10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The container shows a mixed distribution with higher concentration of light balls at the bottom and a mix of normal and heavy balls towards the top, some inconsistency in middle rows.",
+  "change_of_mixing_index": "0.02499999999999998",
+  "important_aspect": "Further mixing could improve homogeneity but all rows are filled, indicating no additional balls can be added. Focus on shaking to optimize distribution."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "partially mixed with varying distribution of ball weights across 10 filled rows",
+  "rows_filled": "10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The container shows a mixed distribution with higher concentration of light balls at the bottom and a mix of normal and heavy balls towards the top, some inconsistency in middle rows.",
+  "change_of_mixing_index": "0.02499999999999998",
+  "important_aspect": "Further mixing could improve homogeneity but all rows are filled, indicating no additional balls can be added. Focus on shaking to optimize distribution."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [2 2 2 2 1 2 2 2 2 3]
+row 9: [3 2 3 3 3 3 3 2 1 2]
+row 8: [2 3 1 2 2 2 2 3 3 2]
+row 7: [2 2 2 2 2 2 2 1 2 1]
+row 6: [1 3 2 3 2 3 1 2 2 2]
+row 5: [3 1 3 3 3 1 3 3 3 1]
+row 4: [3 3 3 1 3 3 1 3 3 3]
+row 3: [1 1 1 1 1 1 3 1 1 3]
+row 2: [1 1 1 1 1 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "The current state shows a mix but with a significant clustering of ball weights in certain areas. Shaking is necessary to further homogenize the distribution, as heavier balls need to move down and lighter balls should move up to achieve a more uniform mix.",
+  "action": "shake",
+  "parameters": {}
+}
+Shake
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [2 2 2 2 1 2 2 1 2 1]
+row 9: [3 2 3 1 3 3 2 2 1 3]
+row 8: [2 3 1 3 2 2 3 2 3 2]
+row 7: [1 2 2 2 2 2 1 3 2 2]
+row 6: [2 3 2 2 2 1 2 2 2 2]
+row 5: [1 1 3 3 1 3 1 3 3 1]
+row 4: [3 1 1 3 3 3 3 3 3 3]
+row 3: [3 3 3 1 3 1 1 1 1 3]
+row 2: [1 1 1 1 1 1 3 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+The change of mixing index after the last shake action is: 0.014166666666666689
+Output:
+Result:
+
+***********************
+{
+  "container_state": "Mixed",
+  "rows_filled": "10 out of 10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The distribution shows a mix of all three types of balls throughout the container with a slight concentration of light balls at the bottom and heavy balls at the top.",
+  "change_of_mixing_index": "0.014166666666666689",
+  "important_aspect": "The process is complete as all rows are filled and the mixing index reflects a positive change, indicating an improvement in the distribution of balls."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "Mixed",
+  "rows_filled": "10 out of 10",
+  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},
+  "distribution": "The distribution shows a mix of all three types of balls throughout the container with a slight concentration of light balls at the bottom and heavy balls at the top.",
+  "change_of_mixing_index": "0.014166666666666689",
+  "important_aspect": "The process is complete as all rows are filled and the mixing index reflects a positive change, indicating an improvement in the distribution of balls."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [2 2 2 2 1 2 2 1 2 1]
+row 9: [3 2 3 1 3 3 2 2 1 3]
+row 8: [2 3 1 3 2 2 3 2 3 2]
+row 7: [1 2 2 2 2 2 1 3 2 2]
+row 6: [2 3 2 2 2 1 2 2 2 2]
+row 5: [1 1 3 3 1 3 1 3 3 1]
+row 4: [3 1 1 3 3 3 3 3 3 3]
+row 3: [3 3 3 1 3 1 1 1 1 3]
+row 2: [1 1 1 1 1 1 3 1 1 1]
+row 1: [1 1 1 1 1 1 1 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "The container is completely filled with all rows containing balls. The balls are not yet perfectly mixed but require shaking to improve the distribution of balls by weight throughout the container to achieve a homogenous mix.",
+  "action": "shake",
+  "parameters": {}
+}
+Shake
+
+
+***********************
+Observation Agent Working (Using Tool)
+***********************
+Input Observation Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+You will receive the input of the current container state and please concisely describe the current situation within one sentence in terms of:
+- The current state of the container.
+- The number of rows filled and how many more rows of different types of balls are required to complete the process.
+- Describe the 2-dimensional distribution of the different types of balls in the container.
+- A mixing index is an indicator about how evenly distributed are the different types of balls. Review the change of the mixing index after the last shake action, and if the mixing index has been changed into negative value, stop.
+- Highlight one important aspects of the current situation to achieve the objective described above.
+
+For example, you provide the summarized description in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+// The change of mixing index after the last shake action.
+Output:
+{"container_state": "", "rows_filled": "", "number_of_rows_required": {"light_ball": "", "normal_ball": "", "heavy_ball": ""}, "distribution": "", "change_of_mixing_index": "", "important_aspect": ""}
+
+You should now finish the output:
+Input:
+The container state is: row 10: [1 2 2 2 1 2 2 1 2 1]
+row 9: [2 2 1 1 2 3 2 2 1 3]
+row 8: [3 1 3 3 3 2 3 2 3 1]
+row 7: [2 3 2 2 1 2 1 1 2 2]
+row 6: [2 2 1 2 2 1 1 3 2 2]
+row 5: [1 3 2 3 2 1 2 2 3 2]
+row 4: [3 1 3 1 1 3 1 3 1 3]
+row 3: [1 1 1 3 3 3 3 3 3 3]
+row 2: [3 3 3 1 3 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 3 1 1 1]
+The change of mixing index after the last shake action is: 0.027499999999999997
+Output:
+Result:
+
+***********************
+{
+  "container_state": "Mixed",
+  "rows_filled": "10/10",
+  "number_of_rows_required": {
+    "light_ball": "0",
+    "normal_ball": "0",
+    "heavy_ball": "0"
+  },
+  "distribution": "The distribution shows a varied placement of balls with all three types present in almost every row.",
+  "change_of_mixing_index": "0.027499999999999997",
+  "important_aspect": "The container is fully loaded and has a diverse but not perfectly even distribution of ball weights."
+}
+***********************
+Decision Agent Working
+***********************
+Input Decision Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- The container must be filled with exactly 10 rows of balls by the end of the process.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of 3 different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+You shall pay attention to the following insights: {
+  "container_state": "Mixed",
+  "rows_filled": "10/10",
+  "number_of_rows_required": {
+    "light_ball": "0",
+    "normal_ball": "0",
+    "heavy_ball": "0"
+  },
+  "distribution": "The distribution shows a varied placement of balls with all three types present in almost every row.",
+  "change_of_mixing_index": "0.027499999999999997",
+  "important_aspect": "The container is fully loaded and has a diverse but not perfectly even distribution of ball weights."
+}
+
+For example, you provide the output in this format after you receive the input:
+Input:
+// 10 rows of balls with their weight number representing the current state of the container, the bottom row is at the bottom of the matrix.
+Output:
+{"reason_for_an_action": "", "action": "", "parameters": {}} //You should decide an action in JSON format.
+
+You should now finish the output, and only generate 1 action:
+Input:
+The container state is:
+row 10: [1 2 2 2 1 2 2 1 2 1]
+row 9: [2 2 1 1 2 3 2 2 1 3]
+row 8: [3 1 3 3 3 2 3 2 3 1]
+row 7: [2 3 2 2 1 2 1 1 2 2]
+row 6: [2 2 1 2 2 1 1 3 2 2]
+row 5: [1 3 2 3 2 1 2 2 3 2]
+row 4: [3 1 3 1 1 3 1 3 1 3]
+row 3: [1 1 1 3 3 3 3 3 3 3]
+row 2: [3 3 3 1 3 1 1 1 1 1]
+row 1: [1 1 1 1 1 1 3 1 1 1]
+Output:
+Result:
+
+***********************
+{
+  "reason_for_an_action": "The container has 10 rows of balls filled with a good mix of light, normal, and heavy balls across all layers, fulfilling the objective of a mixed distribution.",
+  "action": "stop",
+  "parameters": {}
+}
+Stop
+[{'action': 'add_balls',
+  'analysis_result': '{\n'
+                     '  "container_state": "empty",\n'
+                     '  "rows_filled": "0",\n'
+                     '  "number_of_rows_required": {\n'
+                     '    "light_ball": "4",\n'
+                     '    "normal_ball": "3",\n'
+                     '    "heavy_ball": "3"\n'
+                     '  },\n'
+                     '  "distribution": "uniformly empty",\n'
+                     '  "change_of_mixing_index": "0.0",\n'
+                     '  "important_aspect": "Adding balls is required to '
+                     'initiate the mixing process."\n'
+                     '}',
+  'container_state': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': '2', 'unit_of_weight': '1'},
+               'reason_for_an_action': 'Initiate mixing process by adding the '
+                                       'first set of balls to the empty '
+                                       'container.'},
+  'delta_mixing_index': 0.011666666666666667,
+  'mixing_index': 0.011666666666666667,
+  'parameters': {'row_number': 2, 'unit_of_weight': '1'},
+  'step': 1},
+ {'action': 'add_balls',
+  'analysis_result': '{\n'
+                     '  "container_state": "The container has the first 2 rows '
+                     'filled with light balls, and 8 rows are empty.",\n'
+                     '  "rows_filled": "2 rows filled, 8 more rows to go.",\n'
+                     '  "number_of_rows_required": {"light_ball": "2", '
+                     '"normal_ball": "3", "heavy_ball": "3"},\n'
+                     '  "distribution": "Light balls occupy the bottom 2 '
+                     'rows.",\n'
+                     '  "change_of_mixing_index": "0.011666666666666667",\n'
+                     '  "important_aspect": "We need to add more rows of balls '
+                     'to fill the container and achieve a mixed distribution '
+                     'of all types."\n'
+                     '}',
+  'container_state': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 2, 'unit_of_weight': 1},
+               'reason_for_an_action': 'To progress towards a mixed '
+                                       'distribution by adding remaining light '
+                                       'balls before introducing heavier ones'},
+  'delta_mixing_index': 0.0,
+  'mixing_index': 0.011666666666666667,
+  'parameters': {'row_number': 2, 'unit_of_weight': 1},
+  'step': 2},
+ {'action': 'add_balls',
+  'analysis_result': '{\n'
+                     '  "container_state": "The container has 6 empty rows on '
+                     'top, followed by 4 rows of light balls at the bottom.",\n'
+                     '  "rows_filled": "4",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "3", "heavy_ball": "3"},\n'
+                     '  "distribution": "The light balls are evenly '
+                     'distributed at the bottom.",\n'
+                     '  "change_of_mixing_index": "0.0",\n'
+                     '  "important_aspect": "Focus on adding rows of normal '
+                     'and heavy balls to achieve the homogenous '
+                     'distribution."\n'
+                     '}',
+  'container_state': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 2, 'unit_of_weight': 3},
+               'reason_for_an_action': 'To start mixing heavy and normal balls '
+                                       'with light balls for an even '
+                                       'distribution'},
+  'delta_mixing_index': 0.02333333333333333,
+  'mixing_index': 0.034999999999999996,
+  'parameters': {'row_number': 2, 'unit_of_weight': 3},
+  'step': 3},
+ {'action': 'add_balls',
+  'analysis_result': '{\n'
+                     '  "container_state": "Partly filled, heavier balls on '
+                     'top of lighter ones.",\n'
+                     '  "rows_filled": "6 out of 10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "3", "heavy_ball": "1"},\n'
+                     '  "distribution": "3 rows of heavy balls (top), followed '
+                     'by 3 rows of light balls (bottom).",\n'
+                     '  "change_of_mixing_index": "0.02333333333333333",\n'
+                     '  "important_aspect": "Need to add more normal and heavy '
+                     'balls to achieve homogenous distribution."\n'
+                     '}',
+  'container_state': [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 3, 'unit_of_weight': 2},
+               'reason_for_an_action': 'To achieve a homogenous distribution, '
+                                       'we need to add normal balls since that '
+                                       'is the only type not yet added to '
+                                       'fulfill the requirement of adding 3 '
+                                       'rows of normal balls.'},
+  'delta_mixing_index': 0.02333333333333333,
+  'mixing_index': 0.05833333333333333,
+  'parameters': {'row_number': 3, 'unit_of_weight': 2},
+  'step': 4},
+ {'action': 'add_balls',
+  'analysis_result': '{\n'
+                     '  "container_state": "Partially filled, bottom 9 rows '
+                     'with balls, top row empty",\n'
+                     '  "rows_filled": "9",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "1"},\n'
+                     '  "distribution": "Bottom 4 rows light balls, above that '
+                     '2 rows heavy balls, then 3 rows of normal balls, top row '
+                     'empty",\n'
+                     '  "change_of_mixing_index": "0.02333333333333333",\n'
+                     '  "important_aspect": "One more row of heavy balls is '
+                     'needed to complete the filling process."\n'
+                     '}',
+  'container_state': [[3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 1, 'unit_of_weight': 3},
+               'reason_for_an_action': 'Need to fill the empty top row with '
+                                       'heavy balls to complete the filling '
+                                       'process and aim for homogeneous '
+                                       'distribution through shaking.'},
+  'delta_mixing_index': 0.011666666666666665,
+  'mixing_index': 0.06999999999999999,
+  'parameters': {'row_number': 1, 'unit_of_weight': 3},
+  'step': 5},
+ {'action': 'shake',
+  'analysis_result': '{\n'
+                     '  "container_state": "The container is currently filled '
+                     'with 10 rows of balls: 4 rows of heavy balls, 3 rows of '
+                     'normal balls, and 3 rows of light balls.",\n'
+                     '  "rows_filled": "10/10",\n'
+                     '  "number_of_rows_required": {"light_ball": "1", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "Light balls are concentrated at the '
+                     'bottom, normal balls in the middle, and heavy balls at '
+                     'the top with an incomplete mix.",\n'
+                     '  "change_of_mixing_index": "0.011666666666666665",\n'
+                     '  "important_aspect": "An additional row of light balls '
+                     'is required to achieve the objective of 10 fully filled '
+                     'rows with a homogenous mix."\n'
+                     '}',
+  'container_state': [[3, 2, 3, 2, 3, 3, 3, 2, 2, 3],
+                      [2, 3, 2, 3, 2, 2, 2, 3, 3, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
+                      [2, 2, 1, 2, 2, 2, 2, 1, 2, 2],
+                      [3, 3, 2, 3, 1, 3, 1, 2, 2, 1],
+                      [3, 3, 3, 3, 3, 1, 3, 3, 3, 3],
+                      [1, 1, 3, 1, 3, 3, 3, 3, 3, 3],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'The container is fully filled with 10 '
+                                       'rows of balls, but the distribution of '
+                                       'light, normal, and heavy balls is not '
+                                       'homogenous. To achieve a homogenous '
+                                       'mix, the container needs to be shaken '
+                                       'to allow balls of different weights to '
+                                       'redistribute.'},
+  'delta_mixing_index': 0.041666666666666685,
+  'mixing_index': 0.11166666666666668,
+  'parameters': {'shake_times': 1},
+  'step': 6},
+ {'action': 'shake',
+  'analysis_result': '{\n'
+                     '  "container_state": "mixed",\n'
+                     '  "rows_filled": "10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "The container shows an uneven '
+                     'distribution of light, normal, and heavy balls across '
+                     'all rows, with light balls concentrated at the bottom '
+                     'and a mix of normal and heavy balls in the top half.",\n'
+                     '  "change_of_mixing_index": "0.041666666666666685",\n'
+                     '  "important_aspect": "Achieving a homogenous mix '
+                     'requires further shaking to better distribute the weight '
+                     'classes of balls across the container."\n'
+                     '}',
+  'container_state': [[2, 2, 2, 2, 1, 2, 2, 2, 2, 3],
+                      [3, 2, 3, 3, 3, 3, 3, 2, 1, 2],
+                      [2, 3, 1, 2, 2, 2, 2, 3, 3, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 1, 2, 1],
+                      [1, 3, 2, 3, 2, 3, 1, 2, 2, 2],
+                      [3, 1, 3, 3, 3, 1, 3, 3, 3, 1],
+                      [3, 3, 3, 1, 3, 3, 1, 3, 3, 3],
+                      [1, 1, 1, 1, 1, 1, 3, 1, 1, 3],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'To better distribute the mixed balls '
+                                       'across the container, enabling a more '
+                                       'uniform distribution of light, normal, '
+                                       'and heavy balls'},
+  'delta_mixing_index': 0.02499999999999998,
+  'mixing_index': 0.13666666666666666,
+  'parameters': {'shake_times': 1},
+  'step': 7},
+ {'action': 'shake',
+  'analysis_result': '{\n'
+                     '  "container_state": "partially mixed with varying '
+                     'distribution of ball weights across 10 filled rows",\n'
+                     '  "rows_filled": "10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "The container shows a mixed '
+                     'distribution with higher concentration of light balls at '
+                     'the bottom and a mix of normal and heavy balls towards '
+                     'the top, some inconsistency in middle rows.",\n'
+                     '  "change_of_mixing_index": "0.02499999999999998",\n'
+                     '  "important_aspect": "Further mixing could improve '
+                     'homogeneity but all rows are filled, indicating no '
+                     'additional balls can be added. Focus on shaking to '
+                     'optimize distribution."\n'
+                     '}',
+  'container_state': [[2, 2, 2, 2, 1, 2, 2, 1, 2, 1],
+                      [3, 2, 3, 1, 3, 3, 2, 2, 1, 3],
+                      [2, 3, 1, 3, 2, 2, 3, 2, 3, 2],
+                      [1, 2, 2, 2, 2, 2, 1, 3, 2, 2],
+                      [2, 3, 2, 2, 2, 1, 2, 2, 2, 2],
+                      [1, 1, 3, 3, 1, 3, 1, 3, 3, 1],
+                      [3, 1, 1, 3, 3, 3, 3, 3, 3, 3],
+                      [3, 3, 3, 1, 3, 1, 1, 1, 1, 3],
+                      [1, 1, 1, 1, 1, 1, 3, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'The current state shows a mix but with '
+                                       'a significant clustering of ball '
+                                       'weights in certain areas. Shaking is '
+                                       'necessary to further homogenize the '
+                                       'distribution, as heavier balls need to '
+                                       'move down and lighter balls should '
+                                       'move up to achieve a more uniform '
+                                       'mix.'},
+  'delta_mixing_index': 0.014166666666666689,
+  'mixing_index': 0.15083333333333335,
+  'parameters': {'shake_times': 1},
+  'step': 8},
+ {'action': 'shake',
+  'analysis_result': '{\n'
+                     '  "container_state": "Mixed",\n'
+                     '  "rows_filled": "10/10",\n'
+                     '  "number_of_rows_required": {\n'
+                     '    "light_ball": "0",\n'
+                     '    "normal_ball": "0",\n'
+                     '    "heavy_ball": "0"\n'
+                     '  },\n'
+                     '  "distribution": "The distribution shows a varied '
+                     'placement of balls with all three types present in '
+                     'almost every row.",\n'
+                     '  "change_of_mixing_index": "0.027499999999999997",\n'
+                     '  "important_aspect": "The container is fully loaded and '
+                     'has a diverse but not perfectly even distribution of '
+                     'ball weights."\n'
+                     '}',
+  'container_state': [[1, 2, 2, 2, 1, 2, 2, 1, 2, 1],
+                      [2, 2, 1, 1, 2, 3, 2, 2, 1, 3],
+                      [3, 1, 3, 3, 3, 2, 3, 2, 3, 1],
+                      [2, 3, 2, 2, 1, 2, 1, 1, 2, 2],
+                      [2, 2, 1, 2, 2, 1, 1, 3, 2, 2],
+                      [1, 3, 2, 3, 2, 1, 2, 2, 3, 2],
+                      [3, 1, 3, 1, 1, 3, 1, 3, 1, 3],
+                      [1, 1, 1, 3, 3, 3, 3, 3, 3, 3],
+                      [3, 3, 3, 1, 3, 1, 1, 1, 1, 1],
+                      [1, 1, 1, 1, 1, 1, 3, 1, 1, 1]],
+  'decision': {'action': 'stop',
+               'parameters': {},
+               'reason_for_an_action': 'The container has 10 rows of balls '
+                                       'filled with a good mix of light, '
+                                       'normal, and heavy balls across all '
+                                       'layers, fulfilling the objective of a '
+                                       'mixed distribution.'},
+  'delta_mixing_index': 0.027499999999999997,
+  'mixing_index': 0.17833333333333334,
+  'parameters': {'shake_times': 1},
+  'step': 9}]
+[{'analysis_result': '{\n'
+                     '  "container_state": "empty",\n'
+                     '  "rows_filled": "0",\n'
+                     '  "number_of_rows_required": {\n'
+                     '    "light_ball": "4",\n'
+                     '    "normal_ball": "3",\n'
+                     '    "heavy_ball": "3"\n'
+                     '  },\n'
+                     '  "distribution": "uniformly empty",\n'
+                     '  "change_of_mixing_index": "0.0",\n'
+                     '  "important_aspect": "Adding balls is required to '
+                     'initiate the mixing process."\n'
+                     '}',
+  'change_of_mixing_index': 0.011666666666666667,
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': '2', 'unit_of_weight': '1'},
+               'reason_for_an_action': 'Initiate mixing process by adding the '
+                                       'first set of balls to the empty '
+                                       'container.'},
+  'step': 0},
+ {'analysis_result': '{\n'
+                     '  "container_state": "The container has the first 2 rows '
+                     'filled with light balls, and 8 rows are empty.",\n'
+                     '  "rows_filled": "2 rows filled, 8 more rows to go.",\n'
+                     '  "number_of_rows_required": {"light_ball": "2", '
+                     '"normal_ball": "3", "heavy_ball": "3"},\n'
+                     '  "distribution": "Light balls occupy the bottom 2 '
+                     'rows.",\n'
+                     '  "change_of_mixing_index": "0.011666666666666667",\n'
+                     '  "important_aspect": "We need to add more rows of balls '
+                     'to fill the container and achieve a mixed distribution '
+                     'of all types."\n'
+                     '}',
+  'change_of_mixing_index': 0.0,
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 2, 'unit_of_weight': 1},
+               'reason_for_an_action': 'To progress towards a mixed '
+                                       'distribution by adding remaining light '
+                                       'balls before introducing heavier ones'},
+  'step': 1},
+ {'analysis_result': '{\n'
+                     '  "container_state": "The container has 6 empty rows on '
+                     'top, followed by 4 rows of light balls at the bottom.",\n'
+                     '  "rows_filled": "4",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "3", "heavy_ball": "3"},\n'
+                     '  "distribution": "The light balls are evenly '
+                     'distributed at the bottom.",\n'
+                     '  "change_of_mixing_index": "0.0",\n'
+                     '  "important_aspect": "Focus on adding rows of normal '
+                     'and heavy balls to achieve the homogenous '
+                     'distribution."\n'
+                     '}',
+  'change_of_mixing_index': 0.02333333333333333,
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 2, 'unit_of_weight': 3},
+               'reason_for_an_action': 'To start mixing heavy and normal balls '
+                                       'with light balls for an even '
+                                       'distribution'},
+  'step': 2},
+ {'analysis_result': '{\n'
+                     '  "container_state": "Partly filled, heavier balls on '
+                     'top of lighter ones.",\n'
+                     '  "rows_filled": "6 out of 10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "3", "heavy_ball": "1"},\n'
+                     '  "distribution": "3 rows of heavy balls (top), followed '
+                     'by 3 rows of light balls (bottom).",\n'
+                     '  "change_of_mixing_index": "0.02333333333333333",\n'
+                     '  "important_aspect": "Need to add more normal and heavy '
+                     'balls to achieve homogenous distribution."\n'
+                     '}',
+  'change_of_mixing_index': 0.02333333333333333,
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 3, 'unit_of_weight': 2},
+               'reason_for_an_action': 'To achieve a homogenous distribution, '
+                                       'we need to add normal balls since that '
+                                       'is the only type not yet added to '
+                                       'fulfill the requirement of adding 3 '
+                                       'rows of normal balls.'},
+  'step': 3},
+ {'analysis_result': '{\n'
+                     '  "container_state": "Partially filled, bottom 9 rows '
+                     'with balls, top row empty",\n'
+                     '  "rows_filled": "9",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "1"},\n'
+                     '  "distribution": "Bottom 4 rows light balls, above that '
+                     '2 rows heavy balls, then 3 rows of normal balls, top row '
+                     'empty",\n'
+                     '  "change_of_mixing_index": "0.02333333333333333",\n'
+                     '  "important_aspect": "One more row of heavy balls is '
+                     'needed to complete the filling process."\n'
+                     '}',
+  'change_of_mixing_index': 0.011666666666666665,
+  'decision': {'action': 'add_balls',
+               'parameters': {'row_number': 1, 'unit_of_weight': 3},
+               'reason_for_an_action': 'Need to fill the empty top row with '
+                                       'heavy balls to complete the filling '
+                                       'process and aim for homogeneous '
+                                       'distribution through shaking.'},
+  'step': 4},
+ {'analysis_result': '{\n'
+                     '  "container_state": "The container is currently filled '
+                     'with 10 rows of balls: 4 rows of heavy balls, 3 rows of '
+                     'normal balls, and 3 rows of light balls.",\n'
+                     '  "rows_filled": "10/10",\n'
+                     '  "number_of_rows_required": {"light_ball": "1", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "Light balls are concentrated at the '
+                     'bottom, normal balls in the middle, and heavy balls at '
+                     'the top with an incomplete mix.",\n'
+                     '  "change_of_mixing_index": "0.011666666666666665",\n'
+                     '  "important_aspect": "An additional row of light balls '
+                     'is required to achieve the objective of 10 fully filled '
+                     'rows with a homogenous mix."\n'
+                     '}',
+  'change_of_mixing_index': 0.041666666666666685,
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'The container is fully filled with 10 '
+                                       'rows of balls, but the distribution of '
+                                       'light, normal, and heavy balls is not '
+                                       'homogenous. To achieve a homogenous '
+                                       'mix, the container needs to be shaken '
+                                       'to allow balls of different weights to '
+                                       'redistribute.'},
+  'step': 5},
+ {'analysis_result': '{\n'
+                     '  "container_state": "mixed",\n'
+                     '  "rows_filled": "10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "The container shows an uneven '
+                     'distribution of light, normal, and heavy balls across '
+                     'all rows, with light balls concentrated at the bottom '
+                     'and a mix of normal and heavy balls in the top half.",\n'
+                     '  "change_of_mixing_index": "0.041666666666666685",\n'
+                     '  "important_aspect": "Achieving a homogenous mix '
+                     'requires further shaking to better distribute the weight '
+                     'classes of balls across the container."\n'
+                     '}',
+  'change_of_mixing_index': 0.02499999999999998,
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'To better distribute the mixed balls '
+                                       'across the container, enabling a more '
+                                       'uniform distribution of light, normal, '
+                                       'and heavy balls'},
+  'step': 6},
+ {'analysis_result': '{\n'
+                     '  "container_state": "partially mixed with varying '
+                     'distribution of ball weights across 10 filled rows",\n'
+                     '  "rows_filled": "10",\n'
+                     '  "number_of_rows_required": {"light_ball": "0", '
+                     '"normal_ball": "0", "heavy_ball": "0"},\n'
+                     '  "distribution": "The container shows a mixed '
+                     'distribution with higher concentration of light balls at '
+                     'the bottom and a mix of normal and heavy balls towards '
+                     'the top, some inconsistency in middle rows.",\n'
+                     '  "change_of_mixing_index": "0.02499999999999998",\n'
+                     '  "important_aspect": "Further mixing could improve '
+                     'homogeneity but all rows are filled, indicating no '
+                     'additional balls can be added. Focus on shaking to '
+                     'optimize distribution."\n'
+                     '}',
+  'change_of_mixing_index': 0.014166666666666689,
+  'decision': {'action': 'shake',
+               'parameters': {},
+               'reason_for_an_action': 'The current state shows a mix but with '
+                                       'a significant clustering of ball '
+                                       'weights in certain areas. Shaking is '
+                                       'necessary to further homogenize the '
+                                       'distribution, as heavier balls need to '
+                                       'move down and lighter balls should '
+                                       'move up to achieve a more uniform '
+                                       'mix.'},
+  'step': 7},
+ {'analysis_result': '{\n'
+                     '  "container_state": "Mixed",\n'
+                     '  "rows_filled": "10/10",\n'
+                     '  "number_of_rows_required": {\n'
+                     '    "light_ball": "0",\n'
+                     '    "normal_ball": "0",\n'
+                     '    "heavy_ball": "0"\n'
+                     '  },\n'
+                     '  "distribution": "The distribution shows a varied '
+                     'placement of balls with all three types present in '
+                     'almost every row.",\n'
+                     '  "change_of_mixing_index": "0.027499999999999997",\n'
+                     '  "important_aspect": "The container is fully loaded and '
+                     'has a diverse but not perfectly even distribution of '
+                     'ball weights."\n'
+                     '}',
+  'change_of_mixing_index': 0.027499999999999997,
+  'decision': {'action': 'stop',
+               'parameters': {},
+               'reason_for_an_action': 'The container has 10 rows of balls '
+                                       'filled with a good mix of light, '
+                                       'normal, and heavy balls across all '
+                                       'layers, fulfilling the objective of a '
+                                       'mixed distribution.'},
+  'step': 8}]
+***********************
+Summarization Agent Working
+***********************
+Input Summarization Agent:
+
+***********************
+You are a ball mixing machine operator. This machine mixes three types of balls—heavy, normal, and light—within a container. All balls are identical in size but differ in weight. The mixing process takes place in a two-dimensional container designed as a 10x10 matrix, allowing for 10 rows of 10 balls each.
+
+Types of Balls:
+- Heavy Ball: Weight of 3 units.
+- Normal Ball: Weight of 2 units.
+- Light Ball: Weight of 1 unit.
+
+Container Specifications:
+- The container is structured into a 10x10 matrix, accommodating up to 100 balls in 10 rows, with each row holding 10 balls.
+- The container is filled from the bottom row to the top row.
+- The container is represented as a 10x10 matrix, with each cell containing a number representing the weight of the ball in that position.
+- '0' indicates an empty cell.
+- '1' indicates a light ball.
+- '2' indicates a normal ball.
+- '3' indicates a heavy ball.
+- Initially, the container is empty, and the container state has the following format:
+row 10: [0 0 0 0 0 0 0 0 0 0]
+row 9: [0 0 0 0 0 0 0 0 0 0]
+row 8: [0 0 0 0 0 0 0 0 0 0]
+row 7: [0 0 0 0 0 0 0 0 0 0]
+row 6: [0 0 0 0 0 0 0 0 0 0]
+row 5: [0 0 0 0 0 0 0 0 0 0]
+row 4: [0 0 0 0 0 0 0 0 0 0]
+row 3: [0 0 0 0 0 0 0 0 0 0]
+row 2: [0 0 0 0 0 0 0 0 0 0]
+row 1: [0 0 0 0 0 0 0 0 0 0]
+
+
+
+Actions:
+(1) Adding Balls:
+- You can add one or more rows of balls, but exclusively of one type during each action.
+- You can only add 1 row or 2 rows of balls in each action.
+- You can perform the add action in this format: {"action": "add_balls", "parameters":{"row_number": "", "unit_of_weight": ""}}, row_number is an integer between 1 and 10, and unit_of_weight is an integer between 1 and 3.
+
+(2) Shaking the Container:
+- After each shake, gravity may cause heavier balls to switch positions with lighter balls immediately below them.
+- The shaking action helps to mix the balls of different weights.
+- You can perform the shake action in this format: {"action": "shake", "parameters":{}}.
+
+(3) Stop:
+- You terminate the process if the distribution of balls is well mixed and the container has 10 rows of balls.
+- You can perform the stop action in this format: {"action": "stop", "parameters":{}}.
+
+Objective:
+The goal is to mix the balls of different weights by strategically adding rows and utilizing the shaking action to achieve a homogenous distribution of all types of balls within the container.
+In total, you need add 4 rows of light balls, 3 rows of normal balls, and 3 rows of heavy balls to complete the process. The container must be filled with exactly 10 rows of balls by the end of the process.
+
+
+You operated the machine and now need to summarize the actions taken during the mixing process concisely for each step. The detailed log of the actions taken by you during the mixing process, including the following information:
+[{'step': 0, 'analysis_result': '{\n  "container_state": "empty",\n  "rows_filled": "0",\n  "number_of_rows_required": {\n    "light_ball": "4",\n    "normal_ball": "3",\n    "heavy_ball": "3"\n  },\n  "distribution": "uniformly empty",\n  "change_of_mixing_index": "0.0",\n  "important_aspect": "Adding balls is required to initiate the mixing process."\n}', 'decision': {'reason_for_an_action': 'Initiate mixing process by adding the first set of balls to the empty container.', 'action': 'add_balls', 'parameters': {'row_number': '2', 'unit_of_weight': '1'}}, 'change_of_mixing_index': 0.011666666666666667}, {'step': 1, 'analysis_result': '{\n  "container_state": "The container has the first 2 rows filled with light balls, and 8 rows are empty.",\n  "rows_filled": "2 rows filled, 8 more rows to go.",\n  "number_of_rows_required": {"light_ball": "2", "normal_ball": "3", "heavy_ball": "3"},\n  "distribution": "Light balls occupy the bottom 2 rows.",\n  "change_of_mixing_index": "0.011666666666666667",\n  "important_aspect": "We need to add more rows of balls to fill the container and achieve a mixed distribution of all types."\n}', 'decision': {'reason_for_an_action': 'To progress towards a mixed distribution by adding remaining light balls before introducing heavier ones', 'action': 'add_balls', 'parameters': {'row_number': 2, 'unit_of_weight': 1}}, 'change_of_mixing_index': 0.0}, {'step': 2, 'analysis_result': '{\n  "container_state": "The container has 6 empty rows on top, followed by 4 rows of light balls at the bottom.",\n  "rows_filled": "4",\n  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "3"},\n  "distribution": "The light balls are evenly distributed at the bottom.",\n  "change_of_mixing_index": "0.0",\n  "important_aspect": "Focus on adding rows of normal and heavy balls to achieve the homogenous distribution."\n}', 'decision': {'reason_for_an_action': 'To start mixing heavy and normal balls with light balls for an even distribution', 'action': 'add_balls', 'parameters': {'row_number': 2, 'unit_of_weight': 3}}, 'change_of_mixing_index': 0.02333333333333333}, {'step': 3, 'analysis_result': '{\n  "container_state": "Partly filled, heavier balls on top of lighter ones.",\n  "rows_filled": "6 out of 10",\n  "number_of_rows_required": {"light_ball": "0", "normal_ball": "3", "heavy_ball": "1"},\n  "distribution": "3 rows of heavy balls (top), followed by 3 rows of light balls (bottom).",\n  "change_of_mixing_index": "0.02333333333333333",\n  "important_aspect": "Need to add more normal and heavy balls to achieve homogenous distribution."\n}', 'decision': {'reason_for_an_action': 'To achieve a homogenous distribution, we need to add normal balls since that is the only type not yet added to fulfill the requirement of adding 3 rows of normal balls.', 'action': 'add_balls', 'parameters': {'row_number': 3, 'unit_of_weight': 2}}, 'change_of_mixing_index': 0.02333333333333333}, {'step': 4, 'analysis_result': '{\n  "container_state": "Partially filled, bottom 9 rows with balls, top row empty",\n  "rows_filled": "9",\n  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "1"},\n  "distribution": "Bottom 4 rows light balls, above that 2 rows heavy balls, then 3 rows of normal balls, top row empty",\n  "change_of_mixing_index": "0.02333333333333333",\n  "important_aspect": "One more row of heavy balls is needed to complete the filling process."\n}', 'decision': {'reason_for_an_action': 'Need to fill the empty top row with heavy balls to complete the filling process and aim for homogeneous distribution through shaking.', 'action': 'add_balls', 'parameters': {'row_number': 1, 'unit_of_weight': 3}}, 'change_of_mixing_index': 0.011666666666666665}, {'step': 5, 'analysis_result': '{\n  "container_state": "The container is currently filled with 10 rows of balls: 4 rows of heavy balls, 3 rows of normal balls, and 3 rows of light balls.",\n  "rows_filled": "10/10",\n  "number_of_rows_required": {"light_ball": "1", "normal_ball": "0", "heavy_ball": "0"},\n  "distribution": "Light balls are concentrated at the bottom, normal balls in the middle, and heavy balls at the top with an incomplete mix.",\n  "change_of_mixing_index": "0.011666666666666665",\n  "important_aspect": "An additional row of light balls is required to achieve the objective of 10 fully filled rows with a homogenous mix."\n}', 'decision': {'reason_for_an_action': 'The container is fully filled with 10 rows of balls, but the distribution of light, normal, and heavy balls is not homogenous. To achieve a homogenous mix, the container needs to be shaken to allow balls of different weights to redistribute.', 'action': 'shake', 'parameters': {}}, 'change_of_mixing_index': 0.041666666666666685}, {'step': 6, 'analysis_result': '{\n  "container_state": "mixed",\n  "rows_filled": "10",\n  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},\n  "distribution": "The container shows an uneven distribution of light, normal, and heavy balls across all rows, with light balls concentrated at the bottom and a mix of normal and heavy balls in the top half.",\n  "change_of_mixing_index": "0.041666666666666685",\n  "important_aspect": "Achieving a homogenous mix requires further shaking to better distribute the weight classes of balls across the container."\n}', 'decision': {'reason_for_an_action': 'To better distribute the mixed balls across the container, enabling a more uniform distribution of light, normal, and heavy balls', 'action': 'shake', 'parameters': {}}, 'change_of_mixing_index': 0.02499999999999998}, {'step': 7, 'analysis_result': '{\n  "container_state": "partially mixed with varying distribution of ball weights across 10 filled rows",\n  "rows_filled": "10",\n  "number_of_rows_required": {"light_ball": "0", "normal_ball": "0", "heavy_ball": "0"},\n  "distribution": "The container shows a mixed distribution with higher concentration of light balls at the bottom and a mix of normal and heavy balls towards the top, some inconsistency in middle rows.",\n  "change_of_mixing_index": "0.02499999999999998",\n  "important_aspect": "Further mixing could improve homogeneity but all rows are filled, indicating no additional balls can be added. Focus on shaking to optimize distribution."\n}', 'decision': {'reason_for_an_action': 'The current state shows a mix but with a significant clustering of ball weights in certain areas. Shaking is necessary to further homogenize the distribution, as heavier balls need to move down and lighter balls should move up to achieve a more uniform mix.', 'action': 'shake', 'parameters': {}}, 'change_of_mixing_index': 0.014166666666666689}, {'step': 8, 'analysis_result': '{\n  "container_state": "Mixed",\n  "rows_filled": "10/10",\n  "number_of_rows_required": {\n    "light_ball": "0",\n    "normal_ball": "0",\n    "heavy_ball": "0"\n  },\n  "distribution": "The distribution shows a varied placement of balls with all three types present in almost every row.",\n  "change_of_mixing_index": "0.027499999999999997",\n  "important_aspect": "The container is fully loaded and has a diverse but not perfectly even distribution of ball weights."\n}', 'decision': {'reason_for_an_action': 'The container has 10 rows of balls filled with a good mix of light, normal, and heavy balls across all layers, fulfilling the objective of a mixed distribution.', 'action': 'stop', 'parameters': {}}, 'change_of_mixing_index': 0.027499999999999997}]
+
+Now, please provide a summary of the actions taken in the log in a text report, summarizing each step with its main reason concisely, in the following form:
+{
+    "step_summary": [
+        {
+            "step": ,
+            "summary": ""
+            "change_of_mixing_index": ""
+        }
+        ...
+    ]}
+
+Result:
+
+***********************
+{
+    "step_summary": [
+        {
+            "step": 0,
+            "summary": "Initiate mixing process by adding the first set of balls to the empty container.",
+            "change_of_mixing_index": 0.011666666666666667
+        },
+        {
+            "step": 1,
+            "summary": "To progress towards a mixed distribution by adding remaining light balls before introducing heavier ones.",
+            "change_of_mixing_index": 0.0
+        },
+        {
+            "step": 2,
+            "summary": "Focus on adding rows of normal and heavy balls to achieve the homogenous distribution.",
+            "change_of_mixing_index": 0.02333333333333333
+        },
+        {
+            "step": 3,
+            "summary": "Need to add more normal and heavy balls to achieve homogenous distribution.",
+            "change_of_mixing_index": 0.02333333333333333
+        },
+        {
+            "step": 4,
+            "summary": "One more row of heavy balls is needed to complete the filling process.",
+            "change_of_mixing_index": 0.011666666666666665
+        },
+        {
+            "step": 5,
+            "summary": "The container is fully filled with 10 rows of balls, but the distribution of light, normal, and heavy balls is not homogenous. To achieve a homogenous mix, the container needs to be shaken to allow balls of different weights to redistribute.",
+            "change_of_mixing_index": 0.041666666666666685
+        },
+        {
+            "step": 6,
+            "summary": "To better distribute the mixed balls across the container, enabling a more uniform distribution of light, normal, and heavy balls.",
+            "change_of_mixing_index": 0.02499999999999998
+        },
+        {
+            "step": 7,
+            "summary": "The current state shows a mix but with a significant clustering of ball weights in certain areas. Shaking is necessary to further homogenize the distribution, as heavier balls need to move down and lighter balls should move up to achieve a more uniform mix.",
+            "change_of_mixing_index": 0.014166666666666689
+        },
+        {
+            "step": 8,
+            "summary": "The container has 10 rows of balls filled with a good mix of light, normal, and heavy balls across all layers, fulfilling the objective of a mixed distribution.",
+            "change_of_mixing_index": 0.027499999999999997
+        }
+    ]
+}
+{
+    "step_summary": [
+        {
+            "step": 0,
+            "summary": "Initiate mixing process by adding the first set of balls to the empty container.",
+            "change_of_mixing_index": 0.011666666666666667
+        },
+        {
+            "step": 1,
+            "summary": "To progress towards a mixed distribution by adding remaining light balls before introducing heavier ones.",
+            "change_of_mixing_index": 0.0
+        },
+        {
+            "step": 2,
+            "summary": "Focus on adding rows of normal and heavy balls to achieve the homogenous distribution.",
+            "change_of_mixing_index": 0.02333333333333333
+        },
+        {
+            "step": 3,
+            "summary": "Need to add more normal and heavy balls to achieve homogenous distribution.",
+            "change_of_mixing_index": 0.02333333333333333
+        },
+        {
+            "step": 4,
+            "summary": "One more row of heavy balls is needed to complete the filling process.",
+            "change_of_mixing_index": 0.011666666666666665
+        },
+        {
+            "step": 5,
+            "summary": "The container is fully filled with 10 rows of balls, but the distribution of light, normal, and heavy balls is not homogenous. To achieve a homogenous mix, the container needs to be shaken to allow balls of different weights to redistribute.",
+            "change_of_mixing_index": 0.041666666666666685
+        },
+        {
+            "step": 6,
+            "summary": "To better distribute the mixed balls across the container, enabling a more uniform distribution of light, normal, and heavy balls.",
+            "change_of_mixing_index": 0.02499999999999998
+        },
+        {
+            "step": 7,
+            "summary": "The current state shows a mix but with a significant clustering of ball weights in certain areas. Shaking is necessary to further homogenize the distribution, as heavier balls need to move down and lighter balls should move up to achieve a more uniform mix.",
+            "change_of_mixing_index": 0.014166666666666689
+        },
+        {
+            "step": 8,
+            "summary": "The container has 10 rows of balls filled with a good mix of light, normal, and heavy balls across all layers, fulfilling the objective of a mixed distribution.",
+            "change_of_mixing_index": 0.027499999999999997
+        }
+    ]
+}
