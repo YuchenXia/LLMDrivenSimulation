@@ -2,6 +2,8 @@ This folder contains the source code for reproducibility and demostration.
 
 You can run the simulation multiple times to observe how LLM agents perform different parameter settings, trying to achieve the objective.
 
+Using GPT-4 is recommended, and the reasoning capability of the large language model is essential for satisfactory results.
+
 ## Installation
 To set up the project locally, follow these steps:
 
