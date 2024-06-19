@@ -1,4 +1,6 @@
-This folder contains the source code for reproducibility.
+This folder contains the source code for reproducibility and demostration. 
+
+You can run the simulation multiple times to observe how LLM agents perform different parameter settings, trying to achieve the objective.
 
 ## Installation
 To set up the project locally, follow these steps:
