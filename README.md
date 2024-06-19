@@ -12,6 +12,12 @@ A demo video with higher resolution is for download: [mix_real_experiment.mov](m
 
 A demo video with higher resolution is for download: [mix_simulation.mov](mix_simulation.mov)
 
+# Source code realease
+The folder **source_code** contains the source code for reproducibility. 
+
+Follow the **source_code/README.md** for the source code to run the prototyp locally.
+
+
 ## The system design
 The LLM interprets the simulation steps in a cyclic manner, interacting with the data and control interface in a digital environment.
 
