@@ -2,17 +2,22 @@
 LLM system interacts with simulation models in digital twins
 (work-in-progress, under construction)
 
-## Human performs experiment
+
+## How to mix a container with different ingredients?
+
+### :woman_scientist: :man_scientist: :bar_chart:  Human performs experiment:
+
 ![Real Mix Demo](demos/mix_real.gif)
 
-A demo video with higher resolution is for download: [mix_real_experiment.mov](mix_real_experiment.mov)
+A demo video with higher resolution: [mix_real_experiment.mov](mix_real_experiment.mov)
 
-## LLM agent performs simulation
+### :robot: :desktop_computer: :bar_chart: LLM agent performs simulation
+
 ![Simulation Mix Demo](demos/mix_simulation.gif)
 
-A demo video with higher resolution is for download: [mix_simulation.mov](mix_simulation.mov)
+A demo video with higher resolution: [mix_simulation.mov](mix_simulation.mov)
 
-## Source code realease
+## Source code release
 The folder **source_code** contains the source code for reproducibility. 
 
 Follow the **source_code/README.md** for the source code to run the prototyp locally.
