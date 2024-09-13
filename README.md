@@ -1,6 +1,7 @@
-# LLMDrivenSimulation
-LLM system interacts with simulation models in digital twins
-(work-in-progress, A preprint manuscript draft is available on arXiv: https://arxiv.org/abs/2405.18092)
+# LLM experiments with simulation
+This repository contains the accompanying demo video and code for the paper: **LLM experiments with simulation: Large Language Model Multi-Agent System for Simulation Model Parametrization in Digital Twins**
+
+(Work-in-progress, a preprint manuscript draft is available on arXiv: https://arxiv.org/abs/2405.18092)
 
 
 ## How to mix a container with different ingredients?
@@ -16,12 +17,6 @@ A demo video with higher resolution: [mix_real_experiment.mov](mix_real_experime
 ![Simulation Mix Demo](demos/mix_simulation.gif)
 
 A demo video with higher resolution: [mix_simulation.mov](mix_simulation.mov)
-
-## Source code release
-The folder **source_code** contains the source code for reproducibility. 
-
-Follow the **source_code/README.md** for the source code to run the prototyp locally.
-
 
 ## The system design
 The LLM interprets the simulation steps in a cyclic manner, interacting with the data and control interface in a digital environment.
@@ -48,6 +43,12 @@ The user provides an objective to the multi-agent system, which then experiments
 - **Project Status**: it is currently a **work-in-progress** research project and the paper has been presented at **IEEE ETFA 2024** - IEEE International Conference on Emerging Technologies and Factory Automation (10th-13th September 2024, Padova, Italy).
 - **Application Area**: we are investigating the LLMs' interaction with more sophisticated simulation models for **industrial automation systems**.
 
+## Source code release
+The folder **source_code** contains the source code for reproducibility. 
+
+Follow the **source_code/README.md** for the source code to run the prototyp locally.
+
+Licence: CC BY (Attribution)
 
 ## The Paper
 Details of this work has been documented in a paper in Proceedings of IEEE 28th International Conference on Emerging Technologies and Factory Automation (ETFA), and will be published soon.
