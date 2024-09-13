@@ -1,6 +1,6 @@
 # LLMDrivenSimulation
 LLM system interacts with simulation models in digital twins
-(work-in-progress, under construction)
+(work-in-progress, A preprint manuscript draft is available on arXiv: https://arxiv.org/abs/2405.18092)
 
 
 ## How to mix a container with different ingredients?
@@ -45,17 +45,19 @@ The user provides an objective to the multi-agent system, which then experiments
 ---
 ## Research Paper 
 - **Design**: introduces a framework that integrates a multi-agent system with LLMs to interact with a simulation model and find parametrization solutions for a process.
-- **Project Status**: it is currently a **work-in-progress** research project and the paper is **under peer-review**.
+- **Project Status**: it is currently a **work-in-progress** research project and the paper has been presented at **IEEE ETFA 2024** - IEEE International Conference on Emerging Technologies and Factory Automation (10th-13th September 2024, Padova, Italy).
 - **Application Area**: we are investigating the LLMs' interaction with more sophisticated simulation models for **industrial automation systems**.
 
 
-## Paper Citation
-Details of this work has been documented in a pre-print paper, which is currently under review.
->Xia, Y., Dittler, D., Jazdi, N., Chen, H., & Weyrich, M. (2024). LLM experiments with simulation: Large Language Model Multi-Agent System for Process Simulation Parametrization in Digital Twins. https://arxiv.org/abs/2405.18092v1
+## The Paper
+Details of this work has been documented in a paper in Proceedings of IEEE 28th International Conference on Emerging Technologies and Factory Automation (ETFA), and will be published soon.
+
+A preprint manuscript draft is available on arXiv:
+>Xia, Y., Dittler, D., Jazdi, N., Chen, H., & Weyrich, M. (2024). LLM experiments with simulation: Large Language Model Multi-Agent System for Simulation Model Parametrization in Digital Twins. https://arxiv.org/abs/2405.18092
 
 ```bibtex
 @misc{xia2024llm,
-      title={LLM experiments with simulation: Large Language Model Multi-Agent System for Process Simulation Parametrization in Digital Twins}, 
+      title={LLM experiments with simulation: Large Language Model Multi-Agent System for Simulation Model Parametrization in Digital Twins}, 
       author={Yuchen Xia and Daniel Dittler and Nasser Jazdi and Haonan Chen and Michael Weyrich},
       year={2024},
       eprint={2405.18092},
