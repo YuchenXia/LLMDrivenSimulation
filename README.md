@@ -51,10 +51,10 @@ Follow the **source_code/README.md** for the source code to run the prototyp loc
 Licence: CC BY (Attribution)
 
 ## The Paper
-Details of this work has been documented in a paper in Proceedings of IEEE 28th International Conference on Emerging Technologies and Factory Automation (ETFA), and will be published soon.
+Details of this work has been documented in a paper in Proceedings of IEEE 28th International Conference on Emerging Technologies and Factory Automation (ETFA, 10th-13th September 2024, Padova, Italy) and will be published by IEEE soon.
 
 A preprint manuscript draft is available on arXiv:
->Xia, Y., Dittler, D., Jazdi, N., Chen, H., & Weyrich, M. (2024). LLM experiments with simulation: Large Language Model Multi-Agent System for Simulation Model Parametrization in Digital Twins. https://arxiv.org/abs/2405.18092
+>Xia, Y., Dittler, D., Jazdi, N., Chen, H., & Weyrich, M. (2024). **LLM experiments with simulation: Large Language Model Multi-Agent System for Simulation Model Parametrization in Digital Twins**. https://arxiv.org/abs/2405.18092
 
 ```bibtex
 @misc{xia2024llm,
